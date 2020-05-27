@@ -7,9 +7,7 @@ import * as WebSiteModels from 'azure-arm-website/lib/models';
 import * as fse from 'fs-extra';
 import * as path from 'path';
 import { MessageItem } from 'vscode';
-import {
-    AppSettingsTreeItem, AppSettingTreeItem, deleteSite, DeploymentsTreeItem, DeploymentTreeItem, FolderTreeItem, ISiteTreeRoot, LinuxRuntimes, LogFilesTreeItem, SiteClient, SiteFilesTreeItem
-} from 'vscode-azureappservice';
+import { AppSettingsTreeItem, AppSettingTreeItem, deleteSite, DeploymentsTreeItem, DeploymentTreeItem, FolderTreeItem, ISiteTreeRoot, LinuxRuntimes, LogFilesTreeItem, SiteClient, SiteFilesTreeItem } from 'vscode-azureappservice';
 import { AzExtTreeItem, AzureParentTreeItem, AzureTreeItem, DialogResponses, IActionContext } from 'vscode-azureextensionui';
 import * as constants from '../constants';
 import { ext } from '../extensionVariables';
@@ -43,7 +41,7 @@ export abstract class SiteTreeItem extends AzureParentTreeItem<ISiteTreeRoot> im
         this._root = Object.assign({}, parent.root, { client });
         this._state = client.initialState;
 
-        this.appSettingsNode = new AppSettingsTreeItem(this);
+        this.appSettingsNode = new AppSettingsTreeItem(this, client);
         this._connectionsNode = new ConnectionsTreeItem(this);
         this._siteFilesNode = new SiteFilesTreeItem(this, false);
         this._logFilesNode = new LogFilesTreeItem(this);
@@ -91,7 +89,7 @@ export abstract class SiteTreeItem extends AzureParentTreeItem<ISiteTreeRoot> im
         return this.root.client.id;
     }
 
-    public async loadMoreChildrenImpl(_clearCache: boolean): Promise<AzureTreeItem<ISiteTreeRoot>[]> {
+    public async loadMoreChildrenImpl(_clearCache: boolean): Promise<AzExtTreeItem[]> {
         const siteConfig: WebSiteModels.SiteConfig = await this.root.client.getSiteConfig();
         const sourceControl: WebSiteModels.SiteSourceControl = await this.root.client.getSourceControl();
         this.deploymentsNode = new DeploymentsTreeItem(this, siteConfig, sourceControl);

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtParentTreeItem, AzExtTreeItem, TreeItemIconPath } from 'vscode-azureextensionui';
+import { AzExtParentTreeItem, TreeItemIconPath } from 'vscode-azureextensionui';
 import { localize } from '../../localize';
 import { getIconPath } from '../../utils/pathUtils';
 import { ITrialAppMetadata } from './ITrialAppMetadata';
 
-export abstract class TrialAppTreeItemBase extends AzExtTreeItem {
+export abstract class TrialAppTreeItemBase extends AzExtParentTreeItem {
 
     public get iconPath(): TreeItemIconPath {
         return getIconPath('WebApp');

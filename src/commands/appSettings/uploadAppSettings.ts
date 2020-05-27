@@ -6,7 +6,8 @@
 import { WebSiteManagementModels } from "azure-arm-website";
 import * as dotenv from 'dotenv';
 import { Uri, window } from "vscode";
-import { AppSettingsTreeItem, confirmOverwriteSettings, SiteClient } from "vscode-azureappservice";
+import { AppSettingsTreeItem, confirmOverwriteSettings } from "vscode-azureappservice";
+import { IAppSettingsClient } from 'vscode-azureappservice/out/src/IAppSettingsClient';
 import { IActionContext } from "vscode-azureextensionui";
 import { envFileName } from "../../constants";
 import { ext } from "../../extensionVariables";
@@ -27,7 +28,7 @@ export async function uploadAppSettings(context: IActionContext, target?: Uri | 
     if (!node) {
         node = <AppSettingsTreeItem>await ext.tree.showTreeItemPicker(AppSettingsTreeItem.contextValue, context);
     }
-    const client: SiteClient = node.root.client;
+    const client: IAppSettingsClient = node.client;
     await node.runWithTemporaryDescription(`Uploading settings to "${client.fullName}"...`, async () => {
         const localEnvVariables: dotenv.DotenvParseOutput = await getLocalEnvironmentVariables(envPath);
         if (Object.keys(localEnvVariables).length > 0) {

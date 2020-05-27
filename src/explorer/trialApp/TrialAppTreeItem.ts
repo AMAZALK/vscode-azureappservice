@@ -3,11 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { AppSettingsTreeItem } from 'vscode-azureappservice';
+import { AzExtTreeItem, IActionContext } from 'vscode-azureextensionui';
 import { openUrl } from '../../utils/openUrl';
 import { requestUtils } from '../../utils/requestUtils';
 import { AzureAccountTreeItem } from '../AzureAccountTreeItem';
 import { ISiteTreeItem } from '../ISiteTreeItem';
 import { ITrialAppMetadata } from './ITrialAppMetadata';
+import { TrialAppClient } from './TrialAppClient';
 import { TrialAppTreeItemBase } from './TrialAppTreeItemBase';
 
 export class TrialAppTreeItem extends TrialAppTreeItemBase implements ISiteTreeItem {
@@ -24,12 +27,16 @@ export class TrialAppTreeItem extends TrialAppTreeItemBase implements ISiteTreeI
 
     public defaultHostUrl: string;
 
+    private readonly _appSettingsTreeItem: AppSettingsTreeItem;
+
     private constructor(parent: AzureAccountTreeItem, metadata: ITrialAppMetadata) {
         super(parent, metadata.hostName);
 
         this.metadata = metadata;
         this.defaultHostName = this.metadata.hostName;
         this.defaultHostUrl = `https://${this.defaultHostName}`;
+
+        this._appSettingsTreeItem = new AppSettingsTreeItem(parent, new TrialAppClient(metadata));
     }
 
     public static async createTrialAppTreeItem(parent: AzureAccountTreeItem, loginSession: string): Promise<TrialAppTreeItem> {
@@ -59,6 +66,13 @@ export class TrialAppTreeItem extends TrialAppTreeItemBase implements ISiteTreeI
         } catch (error) {
             throw error;
         }
+    }
+
+    public loadMoreChildrenImpl(_clearCache: boolean, _context: IActionContext): Promise<AzExtTreeItem[]> {
+        return Promise.resolve([this._appSettingsTreeItem]);
+    }
+    public hasMoreChildrenImpl(): boolean {
+        return false;
     }
 
     public async browse(): Promise<void> {
