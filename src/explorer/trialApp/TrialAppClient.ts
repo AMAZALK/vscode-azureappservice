@@ -15,8 +15,8 @@ import { ITrialAppMetadata } from './ITrialAppMetadata';
 export class TrialAppClient implements IDeploymentsClient, IFilesClient {
 
     public isFunctionApp: boolean = false;
+    public metadata: ITrialAppMetadata;
 
-    private metadata: ITrialAppMetadata;
     private credentials: ServiceClientCredentials;
 
     public get fullName(): string {

@@ -16,7 +16,9 @@ import { TrialAppClient } from './TrialAppClient';
 export class TrialAppTreeItem extends SiteTreeItemBase implements ISiteTreeItem {
     public static contextValue: string = 'trialApp';
     public contextValue: string = TrialAppTreeItem.contextValue;
-    public metadata: ITrialAppMetadata;
+    public get metadata(): ITrialAppMetadata {
+        return this.client.metadata;
+    }
     public deploymentsNode: DeploymentsTreeItem;
     public readonly appSettingsNode: AppSettingsTreeItem;
     public readonly client: TrialAppClient;
@@ -72,7 +74,7 @@ export class TrialAppTreeItem extends SiteTreeItemBase implements ISiteTreeItem 
     }
 
     public async refreshImpl(): Promise<void> {
-        this.metadata = await TrialAppClient.getTrialAppMetaData(this.metadata.loginSession);
+        this.client.metadata = await TrialAppClient.getTrialAppMetaData(this.metadata.loginSession);
     }
 
     public isAncestorOfImpl?(contextValue: string | RegExp): boolean {
